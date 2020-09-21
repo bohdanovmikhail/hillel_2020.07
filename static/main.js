@@ -1,4 +1,28 @@
-const usersEl = ge('#users');
+const contactsList = ge('#contacts');
+const firstNameInput = ge('#firstName');
+const lastNameInput = ge('#lastName');
+const phoneInput = ge('#phone');
+const sexSelect = ge('#sex');
+
+function createRecord() {
+  const record = JSON.stringify({
+    firstName: firstNameInput.value,
+    lastName: lastNameInput.value,
+    phone: phoneInput.value,
+    sex: sexSelect.value,
+  });
+  
+  fetch(`/create?record=${record}`)
+    // .then()
+}
+
+function getAllRecords() {
+  fetch('/get-all')
+    .then(response => response.json())
+    .then(records => {
+
+    });
+}
 
 getUsers();
 

@@ -1,30 +1,45 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const contactsDB = require('./contactsDB');
+
 const app = express();
 
-const users = require('./users');
-
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static('../static'));
 
-// Добавил роут, на получение всех пользователей
-app.get('/users', function (req, res) {
-    const userList = users.getAll();
-    res.json(userList);
+app.get('/get-all', function (req, res) {
+    const contacts = contactsDB.getAll();
+    res.json(contacts);
 });
 
-// Получение одного пользователя по его логину
-app.get('/user', function (req, res) {
-    const user = users.getUser(req.query.login);
-    res.json({
-        firstName: user.firstName,
-        lastName: user.lastName,
-    });
+app.get('/create', function (req, res) {
+    const record = JSON.parse(req.query.record);
+
+    contactsDB.create(record);
+    res.send();
 });
 
-// Проверка логина пароля пользователя и возврат в виде строки valid или invalid
-app.get('/auth', function (req, res) {
-    const isCredsValid = users.checkCredentials(req.query.login, req.query.password);
+app.get('/update', function (req, res) {
+    const index = req.query.index;
+    const record = req.query.record;
 
-    res.send(isCredsValid ? 'valid' : 'invalid');
+    contactsDB.update(index, record);
+    res.send();
+});
+
+app.get('/remove', function (req, res) {
+    const indexes = req.query.indexes;
+
+    contactsDB.remove(indexes);
+    res.send();
+});
+
+app.get('/find', function (req, res) {
+    const prediction = req.query.prediction;
+
+    const result = contactsDB.find(prediction);
+    res.json(result);
 });
 
 app.listen(3000);
